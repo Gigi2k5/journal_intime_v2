@@ -1,0 +1,266 @@
+{% extends "base.html" %}
+
+{% block title %}Tableau de bord - Mon Journal Personnel{% endblock %}
+
+{% block content %}
+<style>
+    .dashboard-container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+    
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .welcome-message {
+        font-size: 1.8rem;
+        color: #333;
+    }
+    
+    .dashboard-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .dashboard-card {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        transition: transform 0.3s ease;
+    }
+    
+    .dashboard-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .card-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        color: #6b5b95;
+    }
+    
+    .card-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    
+    .card-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #6b5b95;
+    }
+    
+    .card-description {
+        color: #666;
+        margin-top: 0.5rem;
+    }
+    
+    .action-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+    
+    .action-button {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background-color: #f9f7fe;
+        border: 1px solid #e0e0e0;
+        padding: 0.8rem 1.5rem;
+        border-radius: 8px;
+        text-decoration: none;
+        color: #333;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .action-button:hover {
+        background-color: #6b5b95;
+        color: white;
+    }
+    
+    .recent-activity {
+        margin-top: 3rem;
+    }
+    
+    .activity-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+    
+    .activity-list {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        overflow: hidden;
+    }
+    
+    .activity-item {
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        align-items: center;
+    }
+    
+    .activity-item:last-child {
+        border-bottom: none;
+    }
+    
+    .activity-date {
+        color: #888;
+        font-size: 0.9rem;
+        margin-left: auto;
+    }
+</style>
+
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1 class="welcome-message">Bienvenue, {{ user.first_name }} !</h1>
+        <div class="user-info">
+            <span>{{ user.email }}</span>
+        </div>
+    </div>
+    
+    <div class="dashboard-cards">
+        <div class="dashboard-card">
+            <div class="card-icon">📝</div>
+            <h3 class="card-title">Entrées</h3>
+            <div class="card-value">{{ user.entries|length }}</div>
+            <p class="card-description">Entrées dans votre journal</p>
+        </div>
+        
+        <div class="dashboard-card">
+            <div class="card-icon">📅</div>
+            <h3 class="card-title">Activité</h3>
+            <div class="card-value">
+                {% if user.entries %}
+                    {{ user.entries[-1].date_created.strftime('%d/%m/%Y') }}
+                {% else %}
+                    -
+                {% endif %}
+            </div>
+            <p class="card-description">Dernière entrée</p>
+        </div>
+        
+        <div class="dashboard-card">
+            <div class="card-icon">⏱️</div>
+            <h3 class="card-title">Temps</h3>
+            <div class="card-value">
+                {% if user.entries|length > 0 %}
+                    {{ (user.entries|map(attribute='texte')|join|length // 200) if user.entries else 0 }}
+                {% else %}
+                    0
+                {% endif %}
+            </div>
+            <p class="card-description">Minutes de lecture estimées</p>
+        </div>
+    </div>
+
+    <!-- Section Statistiques d'humeur -->
+    <h2>Statistiques d'humeur</h2>
+    <canvas id="chartHumeur" width="400" height="200"></canvas>
+
+    <div class="action-buttons">
+        <a href="{{ url_for('journal') }}" class="action-button">
+            <span>📝</span> Écrire dans mon journal
+        </a>
+        <a href="{{ url_for('profile') }}" class="action-button">
+            <span>👤</span> Gérer mon profil
+        </a>
+        <a href="{{ url_for('export_txt') }}" class="action-button">
+            <span>📄</span> Exporter mon journal 
+        </a>
+    </div>
+    
+    <div class="recent-activity">
+        <div class="activity-header">
+            <h2>Activité récente</h2>
+            <a href="{{ url_for('journal') }}">Voir tout</a>
+        </div>
+        
+        <div class="activity-list">
+            {% if user.entries|length > 0 %}
+                {% for entry in user.entries[:5] %}
+                    <div class="activity-item">
+                        <div>
+                            <strong>Entrée de journal</strong> - 
+                            {{ entry.texte|truncate(50) }}
+                        </div>
+                        <span class="activity-date">{{ entry.date_created.strftime('%d/%m/%Y') }}</span>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="activity-item">
+                    <p>Aucune activité récente. Commencez à écrire dans votre journal!</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Script Chart.js pour les statistiques d'humeur -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Vérifier que les données existent et ne sont pas nulles
+  const labels = {{ humeurs_labels|tojson | safe }};
+  const counts = {{ humeurs_counts|tojson | safe }};
+
+  if (labels.length > 0 && counts.length > 0) {
+    const ctx = document.getElementById('chartHumeur').getContext('2d');
+    const chartHumeur = new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Nombre d\'entrées',
+          data: counts,
+          backgroundColor: [
+            '#FFD700',
+            '#FF6347',
+            '#6A5ACD',
+            '#3CB371',
+            '#FFA500',
+            '#87CEEB'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'bottom',
+          }
+        }
+      }
+    });
+  } else {
+    // Pas de données à afficher, on peut masquer le canvas ou afficher un message
+    document.getElementById('chartHumeur').style.display = 'none';
+    // Optionnel : afficher un message à l'utilisateur
+    const container = document.getElementById('chartHumeur').parentNode;
+    const msg = document.createElement('p');
+    msg.textContent = "Pas encore d'entrées avec humeur pour afficher les statistiques.";
+    container.appendChild(msg);
+  }
+</script>
+{% endblock %}
+

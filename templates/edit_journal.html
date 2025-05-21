@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}Modifier une entrée{% endblock %}
+
+{% block content %}
+<style>
+  .edit-container {
+    max-width: 700px;
+    margin: 30px auto;
+    background: #fdfaf6;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    font-family: 'Georgia', serif;
+  }
+  
+  h2 {
+    text-align: center;
+    color: #3e3e3e;
+    margin-bottom: 25px;
+  }
+  
+  form textarea {
+    width: 100%;
+    height: 200px;
+    padding: 15px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    resize: vertical;
+    background-color: #fff;
+    font-family: 'Georgia', serif;
+  }
+  
+  .edit-date {
+    text-align: center;
+    font-style: italic;
+    color: #777;
+    margin-bottom: 20px;
+  }
+  
+  .btn {
+    display: inline-block;
+    margin-top: 15px;
+    background-color: #6b5b95;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+  }
+  
+  .btn:hover {
+    background-color: #5a4a82;
+  }
+  
+  .btn-cancel {
+    background-color: #999;
+  }
+  
+  .btn-cancel:hover {
+    background-color: #777;
+  }
+  
+  .buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+</style>
+
+<div class="edit-container">
+  <h2>Modifier l'entrée</h2>
+  
+  <div class="edit-date">
+    Écrit le {{ entry.date_created.strftime("%d/%m/%Y") }} à {{ entry.date_created.strftime("%H:%M") }}
+  </div>
+  
+  <form method="POST">
+    <textarea name="texte" required>{{ entry.texte }}</textarea>
+
+    <label for="humeur">Humeur :</label>
+    <select name="humeur" id="humeur">
+      <option value="" {% if not entry.humeur %}selected{% endif %}>(Aucune)</option>
+      <option value="😊" {% if entry.humeur == "😊" %}selected{% endif %}>😊 Heureux</option>
+      <option value="😢" {% if entry.humeur == "😢" %}selected{% endif %}>😢 Triste</option>
+      <option value="😡" {% if entry.humeur == "😡" %}selected{% endif %}>😡 En colère</option>
+      <option value="😌" {% if entry.humeur == "😌" %}selected{% endif %}>😌 Calme</option>
+      <option value="🤔" {% if entry.humeur == "🤔" %}selected{% endif %}>🤔 Pensif</option>
+    </select>
+
+    <label for="tags">Tags (séparés par des virgules) :</label>
+    <input type="text" name="tags" id="tags" placeholder="#vacances, #travail" value="{{ entry.tags | map(attribute='nom') | join(', ') }}">
+
+    <div class="buttons">
+      <a href="{{ url_for('journal') }}" class="btn btn-cancel">Annuler</a>
+      <button type="submit" class="btn">Enregistrer les modifications</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

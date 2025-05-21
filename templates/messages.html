@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Liste des messages{% endblock %}
+
+{% block content %}
+    <h1>Messages reçus</h1>
+    <ul>
+        {% for msg in messages %}
+            <li><strong>{{ msg.nom }}</strong> - {{ msg.email }}</li>
+        {% endfor %}
+    </ul>
+
+    {% if messages|length == 0 %}
+        <p>Aucun message trouvé.</p>
+    {% endif %}
+{% endblock %}

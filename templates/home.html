@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}Accueil - Mon Journal Personnel{% endblock %}
+
+{% block content %}
+<style>
+    .hero {
+        text-align: center;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+    }
+    
+    .hero h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        color: #333;
+    }
+    
+    .quote-container {
+        background-color: #f9f3eb;
+        border-left: 4px solid #6b5b95;
+        padding: 1.5rem;
+        margin: 2rem 0;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    
+    .quote {
+        font-style: italic;
+        font-size: 1.2rem;
+        color: #555;
+        text-align: center;
+    }
+    
+    .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-top: 3rem;
+    }
+    
+    .feature-card {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        padding: 1.5rem;
+        transition: transform 0.3s ease;
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .feature-icon {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        color: #6b5b95;
+    }
+    
+    .cta-button {
+        display: inline-block;
+        background-color: #6b5b95;
+        color: white;
+        padding: 12px 25px;
+        border-radius: 8px;
+        text-decoration: none;
+        margin-top: 2rem;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+    }
+    
+    .cta-button:hover {
+        background-color: #5a4a82;
+    }
+</style>
+
+<div class="hero">
+    <h1>Bienvenue {{ prenom_utilisateurs }}</h1>
+    
+    <div class="quote-container">
+        <p class="quote">"{{ citation_du_jour }}"</p>
+    </div>
+    
+    {% if not current_user.is_authenticated %}
+        <p>Créez votre journal personnel en ligne et partagez vos pensées en toute sécurité.</p>
+        <a href="{{ url_for('register') }}" class="cta-button">Commencer maintenant</a>
+    {% else %}
+        <p>Heureux de vous revoir ! Commencez à écrire dès maintenant.</p>
+        <a href="{{ url_for('journal') }}" class="cta-button">Continuer votre journal</a>
+    {% endif %}
+</div>
+
+<div class="features">
+    <div class="feature-card">
+        <div class="feature-icon">📝</div>
+        <h3>Journal Personnel</h3>
+        <p>Écrivez vos pensées, idées et expériences dans un espace sécurisé et privé.</p>
+    </div>
+    
+    <div class="feature-card">
+        <div class="feature-icon">🔒</div>
+        <h3>Sécurité Avancée</h3>
+        <p>Vos données sont protégées par un système d'authentification robuste.</p>
+    </div>
+    
+    <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3>Navigation Intuitive</h3>
+        <p>Système de pagination innovant par nombre de mots pour une lecture optimale.</p>
+    </div>
+</div>
+{% endblock %}

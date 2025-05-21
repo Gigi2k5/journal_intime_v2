@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Inscription{% endblock %}
+
+{% block content %}
+<h2>Créer un compte</h2>
+<form method="POST">
+    <label for="first_name">Prénom:</label><br>
+    <input type="text" name="first_name" required><br>
+
+    <label for="last_name">Nom:</label><br>
+    <input type="text" name="last_name" required><br>
+
+    <label for="email">Email:</label><br>
+    <input type="email" name="email" required><br>
+
+    <label for="password">Mot de passe:</label><br>
+    <input type="password" name="password" required><br><br>
+
+    <input type="submit" value="S'inscrire">
+</form>
+{% endblock %}

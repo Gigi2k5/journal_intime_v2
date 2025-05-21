@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Paramètres{% endblock %}
+
+{% block content %}
+<h2>Préférences</h2>
+<form method="POST">
+  <label for="theme">Thème :</label>
+  <select name="theme" id="theme">
+    <option value="light" {% if user.theme == 'light' %}selected{% endif %}>Clair</option>
+    <option value="dark" {% if user.theme == 'dark' %}selected{% endif %}>Sombre</option>
+  </select>
+
+  <label for="font">Police :</label>
+  <select name="font" id="font">
+    <option value="default" {% if user.font == 'default' %}selected{% endif %}>Par défaut</option>
+    <option value="serif" {% if user.font == 'serif' %}selected{% endif %}>Serif</option>
+    <option value="sans-serif" {% if user.font == 'sans-serif' %}selected{% endif %}>Sans Serif</option>
+    <option value="monospace" {% if user.font == 'monospace' %}selected{% endif %}>Monospace</option>
+  </select>
+
+  <button type="submit" class="btn">💾 Enregistrer</button>
+</form>
+<br>
+
+
+{% endblock %}

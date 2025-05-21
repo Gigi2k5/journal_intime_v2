@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}Contact - Mon Journal Personnel{% endblock %}
+
+{% block content %}
+<style>
+    .contact-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 2rem 0;
+    }
+    
+    .contact-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .contact-form {
+        background-color: #f9f7fe;
+        border-radius: 8px;
+        padding: 2rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+    }
+    
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 16px;
+    }
+    
+    .form-group textarea {
+        min-height: 150px;
+        resize: vertical;
+    }
+    
+    .form-button {
+        background-color: #6b5b95;
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background-color 0.3s;
+        width: 100%;
+    }
+    
+    .form-button:hover {
+        background-color: #5a4a82;
+    }
+    
+    .contact-info {
+        margin-top: 2rem;
+        padding: 1rem;
+        background-color: #fff;
+        border-left: 4px solid #6b5b95;
+        border-radius: 6px;
+    }
+</style>
+
+<div class="contact-container">
+    <div class="contact-header">
+        <h1>Contactez-nous</h1>
+        <p>Une question, une suggestion ou un commentaire ? N'hésitez pas à nous écrire !</p>
+    </div>
+    
+    <div class="contact-form">
+        <form method="POST">
+            <div class="form-group">
+                <label for="name">Nom complet</label>
+                <input type="text" id="name" name="name" required placeholder="Votre nom">
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Adresse e-mail</label>
+                <input type="email" id="email" name="email" required placeholder="votre@email.com">
+            </div>
+            
+            <div class="form-group">
+                <label for="message">Message</label>
+                <textarea id="message" name="message" placeholder="Votre message ici..."></textarea>
+            </div>
+            
+            <button type="submit" class="form-button">Envoyer le message</button>
+        </form>
+    </div>
+    
+    <div class="contact-info">
+        <h3>Autres moyens de nous contacter</h3>
+        <p><strong>Email:</strong> contact@monjournal.fr</p>
+        <p><strong>Heures d'assistance:</strong> Du lundi au vendredi, 9h00 - 17h00</p>
+    </div>
+</div>
+{% endblock %}
